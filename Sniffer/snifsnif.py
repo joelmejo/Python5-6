@@ -1,4 +1,5 @@
 from scapy.all import *
+from scapy.layers.http import HTTPRequest, HTTPResponse
 
 iPkt = 0
 def process_packet(pkt):
@@ -17,7 +18,7 @@ def process_packet(pkt):
         print(tcp_ports)
     if pkt[IP].sport == 443 or pkt[IP].dport == 443:
         print("PKT HTTPS")
-    else:
+    elif pkt[IP].sport == 80 or pkt[IP].dport == 80:
         print("PKT HTTP")
     
 
