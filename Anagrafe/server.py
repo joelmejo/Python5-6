@@ -35,7 +35,8 @@ def process_json():
     if authentication(username, password) is False:
         print("Autenticazione non riuscita")
         return
-
+    else:
+        print("Autenticazione riuscita!")
     content_type = request.headers.get('Content-Type')
     print("Ricevuta chiamata " + content_type)
     if (content_type == 'application/json'):
