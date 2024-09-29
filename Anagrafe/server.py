@@ -7,34 +7,45 @@ utenti = [["mario", "12345", "rw"], ["franco", "6789", "r"]]
 
 cittadini: list = [["Mario", "Rossi", "01/01/2000", "KRT897AHSJ"]]
 
-api = Flask(__name__)
+app = Flask(__name__)
 
-def authentication(username, password):
-    for u in utenti:
-        if u[0] == username:
-            if u[1] == password:
-                return True
-            else:
-                print("Password errata")
-                return False
-        else:
-            print("Utente errato")
-            return False
-
-@api.route('/inserisci_cittadino', methods=['POST'])
-def process_json():
-    print("Ricevuta chiamata")
-
+def authentication(auth):
     #lettura dati basic authentication per VERIFICA
-    auth = request.headers.get('Authorization')
     auth = auth[6:]
 
     security_data = base64.b64decode(auth).decode("utf-8")
     print(security_data)
     username, password = security_data.split(":")
-    if authentication(username, password) is False:
-        print("Autenticazione non riuscita")
-        return
+    for u in utenti:
+        if u[0] == username:
+            if u[1] == password:
+                if u[2] == 'rw':
+                    return 2
+                else:
+                    return 1
+    print("Utente e/o password errati")
+    return 0
+
+def find_citizen(cf: str) -> list:
+    cittadino_trovato = None
+    for c in cittadini:
+        if c[3] == cf:
+            cittadino_trovato = c
+            break
+    return cittadino_trovato
+
+@app.route('/inserisci_cittadino', methods=['POST'])
+def process_json():
+    print("Ricevuta chiamata")
+
+    auth_response = authentication(request.headers.get('Authorization'))
+    if auth_response == 0:
+        response = {"Esito":"KO","Msg":"Username e/o password errati"}	
+        return json.dumps(response)
+    elif auth_response == 1:
+        print("Utente non autorizzato ad eseguire questa operazione")
+        response = {"Esito":"KO","Msg":"Non sei autorizzato ad eseguire questa operazione"}	
+        return json.dumps(response)
     else:
         print("Autenticazione riuscita!")
     content_type = request.headers.get('Content-Type')
@@ -48,11 +59,79 @@ def process_json():
     else:
         return 'Content-Type not supported!'
 
-@api.route('/get_cittadini', methods=['GET'])
+@app.route('/get_cittadini', methods=['GET'])
 def get_cittadini():
+    print("Ricevuta chiamata")
+
+    auth_response = authentication(request.headers.get('Authorization'))
+    if auth_response == 0:
+        response = {"Esito":"KO","Msg":"Username e/o password errati"}	
+        return json.dumps(response)
+    else:
+        print("Autenticazione riuscita!")
     return json.dumps(cittadini)
 
-# @api.route('/modifica_cittadino', methods=['POST'])
+@app.route('/modifica_cittadino/<string:cf>', methods=['PUT'])
+def update_cittadini(cf):
+    print("Ricevuta chiamata")
+
+    auth_response = authentication(request.headers.get('Authorization'))
+    if auth_response == 0:
+        response = {"Esito":"KO","Msg":"Username e/o password errati"}	
+        return json.dumps(response)
+    elif auth_response == 1:
+        print("Utente non autorizzato")
+        response = {"Esito":"KO","Msg":"Non sei autorizzato ad eseguire questa operazione"}	
+        return json.dumps(response)
+    else:
+        print("Autenticazione riuscita!")
+    
+    cittadino_trovato = find_citizen(cf)
+
+    if cittadino_trovato == None:
+        print("Cittadino non trovato")
+        response = {"Esito":"KO","Msg":"Cittadino non trovato"}	
+        return json.dumps(response)
+    
+    
+    content_type = request.headers.get('Content-Type')
+    print("Ricevuta chiamata " + content_type)
+    if (content_type == 'application/json'):
+        nuovi_dati = request.json
+        print(nuovi_dati)
+        cittadino_trovato[:] = nuovi_dati
+        response = {"Esito":"ok","Msg":"Dato modificato"}	
+        return json.dumps(response)
+    else:
+        return 'Content-Type not supported!'
+    
+@app.route('/elimina_cittadino/<string:cf>', methods=['DELETE'])
+def delete_cittadini(cf):
+    print("Ricevuta chiamata")
+
+    auth_response = authentication(request.headers.get('Authorization'))
+    if auth_response == 0:
+        response = {"Esito":"KO","Msg":"Username e/o password errati"}	
+        return json.dumps(response)
+    elif auth_response == 1:
+        print("Utente non autorizzato")
+        response = {"Esito":"KO","Msg":"Non sei autorizzato ad eseguire questa operazione"}	
+        return json.dumps(response)
+    else:
+        print("Autenticazione riuscita!")
+    
+    cittadino_trovato = find_citizen(cf)
+
+    if cittadino_trovato == None:
+        print("Cittadino non trovato")
+        response = {"Esito":"KO","Msg":"Cittadino non trovato"}	
+        return json.dumps(response)
+    
+    cittadini.remove(cittadino_trovato)
+    response = {"Esito":"ok","Msg":"Dato eliminato"}	
+    return json.dumps(response)
+
+
 
 if __name__ == '__main__':
-    api.run(host="0.0.0.0", port=8080, ssl_context = "adhoc")
+    app.run(host="0.0.0.0", port=8080, ssl_context = "adhoc")

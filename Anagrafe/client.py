@@ -2,11 +2,12 @@ import requests
 from requests.auth import HTTPBasicAuth
 import urllib3
 import time
+import sys
 
 # Disabilita l'avviso di sicurezza
 urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 
-api_url = "https://127.0.0.1:8080/"
+app_url = "https://127.0.0.1:8080/"
 username = ""
 password = ""
 
@@ -49,7 +50,7 @@ while True:
         if username != "" and password != "":
             data = getDatiCittadino()
             try:
-                response = requests.post(api_url + "inserisci_cittadino",json=data, verify=False, auth=HTTPBasicAuth(username, password))
+                response = requests.post(app_url + "inserisci_cittadino",json=data, verify=False, auth=HTTPBasicAuth(username, password))
                 #print(response.json())
                 print(response.status_code)
                 print(response.headers["Content-Type"])
@@ -57,15 +58,45 @@ while True:
                 if type(response.json()) is dict:
                     print_dictionary(response.json())
             except:
-                print("\nLe credenziali inserite non sono valide!")
+                time.sleep(2)
         else:
             print("Devi inserire le credenziali per eseguire questo comando!")
     
     if azione == "2":
-        cittadini = requests.get(api_url + "get_cittadini", verify=False)
+        cittadini = requests.get(app_url + "get_cittadini", verify=False, auth=HTTPBasicAuth(username, password))
         print(cittadini.text)
     
-    # if azione == "3":
+    if azione == "3":
+        if username != "" and password != "":
+            cf = input("Inserisci il codice fiscale del cittadino che vuoi modificare: ")
+            data = getDatiCittadino()
+            try:
+                response = requests.put(app_url + "modifica_cittadino/" + cf, json=data, verify=False, auth=HTTPBasicAuth(username, password))
+                print(response.status_code)
+                print(response.headers["Content-Type"])
+                if type(response.json()) is dict:
+                    print_dictionary(response.json())
+            except:
+                time.sleep(2)
+        else:
+            print("Devi inserire le credenziali per eseguire questo comando!")
+
+    if azione == "4":
+        if username != "" and password != "":
+            cf = input("Inserisci il codice fiscale del cittadino che vuoi eliminare: ")
+            try:
+                response = requests.delete(app_url + "elimina_cittadino/" + cf, verify=False, auth=HTTPBasicAuth(username, password))
+                print(response.status_code)
+                print(response.headers["Content-Type"])
+                if type(response.json()) is dict:
+                    print_dictionary(response.json())
+            except:
+                time.sleep(2)
+        else:
+            print("Devi inserire le credenziali per eseguire questo comando!")
 
     if azione == "5":
         acquisisciCredenziali()
+    
+    if azione == '6':
+        sys.exit()
