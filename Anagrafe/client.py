@@ -34,11 +34,12 @@ def menuOperazioni():
     return comando
 
 def getDatiCittadino():
-    nome = input("Inserisci il nome: ")
-    cognome = input("Inserisci il cognome: ")
-    data_nascita = input("Inserisci la data di nascita: ")
-    codice_fiscale = input("Inserisci il codice fiscale: ")
-    return [nome, cognome, data_nascita, codice_fiscale]
+    nome = input("Inserisci nome: ")
+    cognome = input("Inserisci cognome: ")
+    dataN = input("Inserisci data nascita(dd/mm/yyyy): ")
+    codF = input("Inserisci codice fiscale: ")
+    datiCittadino = {"nome":nome, "cognome": cognome, "dataNascita":dataN, "codFiscale":codF}
+    return datiCittadino
 
 while True:
     time.sleep(2)

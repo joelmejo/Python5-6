@@ -5,7 +5,9 @@ import cryptography
 
 utenti = [["mario", "12345", "rw"], ["franco", "6789", "r"]]
 
-cittadini: list = [["Mario", "Rossi", "01/01/2000", "KRT897AHSJ"]]
+cittadini = [{"nome": "Mario", "cognome": "Rossi", "dataNascita": "20/02/1990","codFiscale":"dfcged90b28h501u"},
+             {"nome": "Mario", "cognome": "Bianchi", "dataNascita": "20/02/1990","codFiscale":"dfcged90b28h501u"},
+             {"nome": "Giuseppe", "cognome": "Verdi", "dataNascita": "20/12/1956","codFiscale":"dfcvds90b28h501u"}]
 
 app = Flask(__name__)
 
@@ -29,7 +31,7 @@ def authentication(auth):
 def find_citizen(cf: str) -> list:
     cittadino_trovato = None
     for c in cittadini:
-        if c[3] == cf:
+        if c['codFiscale'] == cf:
             cittadino_trovato = c
             break
     return cittadino_trovato
@@ -99,7 +101,7 @@ def update_cittadini(cf):
     if (content_type == 'application/json'):
         nuovi_dati = request.json
         print(nuovi_dati)
-        cittadino_trovato[:] = nuovi_dati
+        cittadino_trovato = nuovi_dati
         response = {"Esito":"ok","Msg":"Dato modificato"}	
         return json.dumps(response)
     else:
