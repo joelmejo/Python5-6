@@ -2,7 +2,6 @@ import requests
 from requests.auth import HTTPBasicAuth
 import urllib3
 import time
-import sys
 
 # Disabilita l'avviso di sicurezza
 urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
@@ -41,7 +40,9 @@ def getDatiCittadino() -> dict:
     datiCittadino = {"nome":nome, "cognome": cognome, "dataNascita":dataN, "codFiscale":codF}
     return datiCittadino
 
-while True:
+azione: int= None
+
+while azione != '6':
     time.sleep(2)
     print()
     print("Digita cosa vuoi fare:")
@@ -108,5 +109,3 @@ while True:
     if azione == "5":
         acquisisciCredenziali()
     
-    if azione == '6':
-        sys.exit()
