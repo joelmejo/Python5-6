@@ -76,6 +76,7 @@ while True:
     if azione == "3":
         if username != "" and password != "":
             cf = input("Inserisci il codice fiscale del cittadino che vuoi modificare: ")
+            print("Inserisci i nuovi dati del cittadino")
             data = getDatiCittadino()
             try:
                 response = requests.put(app_url + "modifica_cittadino/" + cf, json=data, verify=False, auth=HTTPBasicAuth(username, password))
