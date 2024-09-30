@@ -11,7 +11,7 @@ cittadini = [{"nome": "Mario", "cognome": "Rossi", "dataNascita": "20/02/1990","
 
 app = Flask(__name__)
 
-def authentication(auth):
+def authentication(auth) -> int:
     #lettura dati basic authentication per VERIFICA
     auth = auth[6:]
 

@@ -11,7 +11,7 @@ app_url = "https://127.0.0.1:8080/"
 username = ""
 password = ""
 
-def acquisisciCredenziali():
+def acquisisciCredenziali() -> None:
     global username, password
     username = input("Inserisci l'username: ")
     password = input("Inserisci la password: ")
@@ -19,11 +19,11 @@ def acquisisciCredenziali():
 print("Client Anagrafe")
 acquisisciCredenziali()
 
-def print_dictionary(dData: dict):
+def print_dictionary(dData: dict) -> None:
     for keys, values in dData.items():
         print(keys + " - " + values)
 
-def menuOperazioni():
+def menuOperazioni() -> str:
     print("1. Inserisci cittadino")
     print("2. Visualizza cittadini")
     print("3. Modifica cittadino")
@@ -33,7 +33,7 @@ def menuOperazioni():
     comando = input()
     return comando
 
-def getDatiCittadino():
+def getDatiCittadino() -> dict:
     nome = input("Inserisci nome: ")
     cognome = input("Inserisci cognome: ")
     dataN = input("Inserisci data nascita(dd/mm/yyyy): ")
