@@ -19,7 +19,7 @@ def acquisisciCredenziali():
 print("Client Anagrafe")
 acquisisciCredenziali()
 
-def print_dictionary(dData):
+def print_dictionary(dData: dict):
     for keys, values in dData.items():
         print(keys + " - " + values)
 
@@ -62,10 +62,16 @@ while True:
                 time.sleep(2)
         else:
             print("Devi inserire le credenziali per eseguire questo comando!")
+        print(f"Status-Code  : {response.status_code}")
     
     if azione == "2":
-        cittadini = requests.get(app_url + "get_cittadini", verify=False, auth=HTTPBasicAuth(username, password))
-        print(cittadini.text)
+        response = requests.get(app_url + "get_cittadini", verify=False, auth=HTTPBasicAuth(username, password))
+        cittadini = response.json()
+        for c in cittadini:
+            print()
+            if type(c) is dict:
+                print_dictionary(c)
+        print(f"Status-Code  : {response.status_code}")
     
     if azione == "3":
         if username != "" and password != "":
@@ -81,6 +87,7 @@ while True:
                 time.sleep(2)
         else:
             print("Devi inserire le credenziali per eseguire questo comando!")
+        print(f"Status-Code  : {response.status_code}")
 
     if azione == "4":
         if username != "" and password != "":
@@ -95,6 +102,7 @@ while True:
                 time.sleep(2)
         else:
             print("Devi inserire le credenziali per eseguire questo comando!")
+        print(f"Status-Code  : {response.status_code}")
 
     if azione == "5":
         acquisisciCredenziali()

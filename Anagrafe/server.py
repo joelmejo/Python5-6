@@ -43,11 +43,11 @@ def process_json():
     auth_response = authentication(request.headers.get('Authorization'))
     if auth_response == 0:
         response = {"Esito":"KO","Msg":"Username e/o password errati"}	
-        return json.dumps(response)
+        return json.dumps(response), 401
     elif auth_response == 1:
         print("Utente non autorizzato ad eseguire questa operazione")
         response = {"Esito":"KO","Msg":"Non sei autorizzato ad eseguire questa operazione"}	
-        return json.dumps(response)
+        return json.dumps(response), 403
     else:
         print("Autenticazione riuscita!")
     content_type = request.headers.get('Content-Type')
@@ -57,7 +57,7 @@ def process_json():
         print(json1)
         cittadini.append(json1)
         response = {"Esito":"ok","Msg":"Dato inserito"}	
-        return json.dumps(response)
+        return json.dumps(response), 200
     else:
         return 'Content-Type not supported!'
 
@@ -68,10 +68,10 @@ def get_cittadini():
     auth_response = authentication(request.headers.get('Authorization'))
     if auth_response == 0:
         response = {"Esito":"KO","Msg":"Username e/o password errati"}	
-        return json.dumps(response)
+        return json.dumps(response), 401
     else:
         print("Autenticazione riuscita!")
-    return json.dumps(cittadini)
+    return json.dumps(cittadini), 200
 
 @app.route('/modifica_cittadino/<string:cf>', methods=['PUT'])
 def update_cittadini(cf):
@@ -80,11 +80,11 @@ def update_cittadini(cf):
     auth_response = authentication(request.headers.get('Authorization'))
     if auth_response == 0:
         response = {"Esito":"KO","Msg":"Username e/o password errati"}	
-        return json.dumps(response)
+        return json.dumps(response), 401
     elif auth_response == 1:
         print("Utente non autorizzato")
         response = {"Esito":"KO","Msg":"Non sei autorizzato ad eseguire questa operazione"}	
-        return json.dumps(response)
+        return json.dumps(response), 403
     else:
         print("Autenticazione riuscita!")
     
@@ -93,7 +93,7 @@ def update_cittadini(cf):
     if cittadino_trovato == None:
         print("Cittadino non trovato")
         response = {"Esito":"KO","Msg":"Cittadino non trovato"}	
-        return json.dumps(response)
+        return json.dumps(response), 404
     
     
     content_type = request.headers.get('Content-Type')
@@ -103,7 +103,7 @@ def update_cittadini(cf):
         print(nuovi_dati)
         cittadino_trovato = nuovi_dati
         response = {"Esito":"ok","Msg":"Dato modificato"}	
-        return json.dumps(response)
+        return json.dumps(response), 200
     else:
         return 'Content-Type not supported!'
     
@@ -114,11 +114,11 @@ def delete_cittadini(cf):
     auth_response = authentication(request.headers.get('Authorization'))
     if auth_response == 0:
         response = {"Esito":"KO","Msg":"Username e/o password errati"}	
-        return json.dumps(response)
+        return json.dumps(response), 401
     elif auth_response == 1:
         print("Utente non autorizzato")
         response = {"Esito":"KO","Msg":"Non sei autorizzato ad eseguire questa operazione"}	
-        return json.dumps(response)
+        return json.dumps(response), 403
     else:
         print("Autenticazione riuscita!")
     
@@ -127,11 +127,11 @@ def delete_cittadini(cf):
     if cittadino_trovato == None:
         print("Cittadino non trovato")
         response = {"Esito":"KO","Msg":"Cittadino non trovato"}	
-        return json.dumps(response)
+        return json.dumps(response), 404
     
     cittadini.remove(cittadino_trovato)
     response = {"Esito":"ok","Msg":"Dato eliminato"}	
-    return json.dumps(response)
+    return json.dumps(response), 200
 
 
 
