@@ -1,5 +1,5 @@
 import json, requests
-import sys
+from requests.auth import HTTPBasicAuth
 
 base_url = "http://127.0.0.1:8080"
 
@@ -24,6 +24,36 @@ def CreaInterfaccia():
     print("4. Elimina cittadino")
     print("5. Exit")
 
+def datiLogin():
+    global username, password, privilegi, login_eseguito
+    username = input("Inserisci l'username: ")
+    password = input("Inserisci la password: ")
+
+def ControlLogin():
+    global login_eseguito
+    api_url = base_url + "/login"
+    jRequest: dict= {"username": username, "password": password}
+    try:
+        response = requests.post(api_url,json=jRequest)
+        print(response.headers["Content-Type"])
+        data1 = response.json()
+        privilegi = data1["Privilegi"]
+        print(data1)
+        login_eseguito = 1
+    except:
+        login_eseguito = 0
+        print("Errore")
+    print(f"Status-Code  : {response.status_code}")
+
+
+login_eseguito: int= 0
+username: str= ""
+password: str= ""
+privilegi: str= ""
+
+while login_eseguito == 0:
+    ControlLogin()
+
 sOper = None
 while (sOper != "5"):
 
@@ -34,7 +64,7 @@ while (sOper != "5"):
         api_url = base_url + "/add_cittadino"
         jsonDataRequest = RichiediDatiCittadino()
         try:
-            response = requests.post(api_url,json=jsonDataRequest)
+            response = requests.post(api_url,json=jsonDataRequest, auth=HTTPBasicAuth(username, password))
             print(response.status_code)
             print(response.headers["Content-Type"])
             data1 = response.json()
@@ -44,7 +74,7 @@ while (sOper != "5"):
     print(f"Status-Code  : {response.status_code}")
 
     if sOper == '2':
-        response = requests.get(api_url + "get_cittadini", verify=False)
+        response = requests.get(api_url + "get_cittadini", verify=False, auth=HTTPBasicAuth(username, password))
         cittadino = response.json()
         if type(cittadino) is dict:
             print_dictionary(cittadino)
@@ -55,7 +85,7 @@ while (sOper != "5"):
         print("Inserisci i nuovi dati del cittadino")
         data = RichiediDatiCittadino()
 
-        response = requests.put(api_url + "modifica_cittadino/" + cf, json=data, verify=False)
+        response = requests.put(api_url + "modifica_cittadino/" + cf, json=data, verify=False, auth=HTTPBasicAuth(username, password))
         print(response.status_code)
         print(response.headers["Content-Type"])
         if type(response.json()) is dict:
