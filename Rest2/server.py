@@ -1,5 +1,5 @@
 from flask import Flask, json, request
-from myjson import JsonSerialize,JsonDeserialize
+from myjson import JsonSerialize, JsonDeserialize
 import base64
 
 sFileAnagrafe: str= "./anagrafe.json"
