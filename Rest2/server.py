@@ -8,21 +8,6 @@ sFileUtenti: str= "./utenti.json"
 dUtenti = JsonDeserialize(sFileUtenti)
 api = Flask(__name__)
 
-def authentication(auth) -> int:
-    #lettura dati basic authentication per VERIFICA
-    auth = auth[6:]
-
-    security_data = base64.b64decode(auth).decode("utf-8")
-    # print(security_data)
-    username, password = security_data.split(":")
-    if username in dUtenti:
-        if dUtenti[username]["password"] == password:
-            if dUtenti[username]["privilegi"] == "rw":
-                return 2
-            return 1
-    # print("Utente e/o password errati")
-    return 0
-
 @api.route('/login', methods=['POST'])
 def GestisciLogin():
     #prendi i dati della richiesta
@@ -49,17 +34,6 @@ def GestisciLogin():
 @api.route('/add_cittadino', methods=['POST'])
 def GestisciAddCittadino():
 
-    auth_response = authentication(request.headers.get('Authorization'))
-    if auth_response == 0:
-        response = {"Esito":"KO","Msg":"Username e/o password errati"}	
-        return json.dumps(response), 401
-    elif auth_response == 1:
-        print("Utente non autorizzato ad eseguire questa operazione")
-        response = {"Esito":"KO","Msg":"Non sei autorizzato ad eseguire questa operazione"}	
-        return json.dumps(response), 403
-    else:
-        print("Autenticazione riuscita!")
-
     #prendi i dati della richiesta
     content_type = request.headers.get('Content-Type')
     print("Ricevuta chiamata " + content_type)
@@ -82,18 +56,6 @@ def GestisciAddCittadino():
 
 @api.route('/get_dati_cittadino', methods=['GET'])
 def gestisciGetCittadino():
-
-    auth_response = authentication(request.headers.get('Authorization'))
-    if auth_response == 0:
-        response = {"Esito":"KO","Msg":"Username e/o password errati"}	
-        return json.dumps(response), 401
-    elif auth_response == 1:
-        print("Utente non autorizzato ad eseguire questa operazione")
-        response = {"Esito":"KO","Msg":"Non sei autorizzato ad eseguire questa operazione"}	
-        return json.dumps(response), 403
-    else:
-        print("Autenticazione riuscita!")
-
 
     content_type = request.headers.get('Content-Type')
 

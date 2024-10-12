@@ -1,12 +1,12 @@
 {
     "admin":{
         "password": "root01",
-        "privilegi": "w",
+        "privilegi": "rw",
         "note": "amministratore del sistema"
     },
     "mario":{
         "password": "mario01",
-        "privilegi": "w",
+        "privilegi": "rw",
         "note": "sportello frazione 1"
     },
     "gianni":{

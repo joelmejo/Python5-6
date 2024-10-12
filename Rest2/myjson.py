@@ -1,7 +1,5 @@
 import json
 
-
-
 def JsonSerialize(dData, sFile) -> int:
     if type(dData) is not dict:
         return 1
