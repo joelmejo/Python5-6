@@ -71,4 +71,4 @@ def gestisciGetCittadino():
             response: dict= {"Esito": "KO", "Msg": "Cittadino non trovato"}
             return json.dumps(response), 404
 
-api.run(host="127.0.0.1", port=8080)
+api.run(host="127.0.0.1", port=8080, ssl_context="adhoc")
