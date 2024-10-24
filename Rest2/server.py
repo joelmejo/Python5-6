@@ -1,6 +1,6 @@
 from flask import Flask, json, request
 from myjson import JsonSerialize, JsonDeserialize
-import base64
+import base64, cryptography
 
 sFileAnagrafe: str= "./anagrafe.json"
 dAnagrafe = JsonDeserialize(sFileAnagrafe)
