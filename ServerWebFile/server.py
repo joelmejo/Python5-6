@@ -6,7 +6,7 @@ api = Flask(__name__)
 with open('pgkey.txt', 'r') as file:
     google_api_key = file.read()
 
-base_url = "https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash-latest:generateContent?key="
+base_url = "https://generativelanguage.googleapis.com/v1/models/gemini-1.5-pro-latest:generateContent?key="
 api_url = base_url + google_api_key
 
 utenti = [['mario','password1','M','0'], 
