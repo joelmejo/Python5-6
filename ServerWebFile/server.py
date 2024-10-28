@@ -47,4 +47,4 @@ def mansendfile():
         return "<HTML><BODY>" + testo + "<BODY><HTML>"
     return "<HTML><BODY>" + str(response.status_code) + "<BODY><HTML>"
 
-api.run(host="0.0.0.0",port=8085)
+api.run(host="opengemini.it",port=8085,ssl_context=("./Certs/02.pem","./Certs/testkey2'.pem"))

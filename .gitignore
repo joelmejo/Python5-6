@@ -1,5 +1,8 @@
 # SELF
 pgkey.txt
+*.pem
+*.dat
+Certs/
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
