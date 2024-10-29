@@ -9,11 +9,6 @@ with open('pgkey.txt', 'r') as file:
 base_url = "https://generativelanguage.googleapis.com/v1/models/gemini-1.5-pro-exp-0827:generateContent?key="
 api_url = base_url + google_api_key
 
-utenti = [['mario','password1','M','0'], 
-          ['gianni','password2','M','0'], 
-          ['AnitaGaribaldi', 'pass3','F','0'] 
-          ]
-
 @api.route('/', methods=['GET'])
 def index():
     return render_template('sendfile.html')
