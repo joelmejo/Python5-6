@@ -1,5 +1,4 @@
 import base64
-# import mmap
 import os
 # import textract
 from docx import Document
@@ -31,10 +30,6 @@ def CercaStringaInFileName(sFile: str, sStringToSearch: str) -> bool:
     sFilename1: str = sFile.lower()
     sStringToSearch1: str = sStringToSearch.lower()
     print(f"Cerco {sStringToSearch1} in {sFilename1}")
-    # iRet: int = sFilename1.find(sStringToSearch1)
-    # if (iRet >= 0):
-    #     print("Trovato!")
-    #     return True
     if sStringToSearch1 in sFilename1:
         return True
     return False
@@ -53,18 +48,6 @@ def CercaInTxt(sFile: str, sString: str) -> bool:
 
     """
     sString: str = sString.lower()
-    # try:
-    #         with open(sFile) as f:
-    #             s = mmap.mmap(f.fileno(), 0, access=mmap.ACCESS_READ)
-    #             sAppo = s.readline()
-    #             while len(sAppo) > 0:
-    #                 SAppo = SAppo.lower()
-    #                 if sAppo.find(sString.encode() != -1):
-    #                     return True
-    #                 else:
-    #                     sAppo = s.readline()
-    #     except:
-    #         return False
     try:
         with open(sFile, encoding="utf-8") as f:
             lines: list[str] = f.readlines()
@@ -102,6 +85,13 @@ def CercaInFileDocx(sFile: str, sString: str) -> bool:
     return False
 
 def CercaInImg(sImage, sString) -> bool | None:
+    _, ext = os.path.splitext(sImage)
+    mime_types = {
+        '.jpg': 'image/jpeg',
+        '.jpeg': 'image/jpeg', 
+        '.png': 'image/png'
+    }
+    mime_type = mime_types.get(ext.lower())
     with open(sImage, 'rb') as f:
         img = f.read()
         
@@ -110,10 +100,10 @@ def CercaInImg(sImage, sString) -> bool | None:
             {
                 "parts": [
                     {
-                        "text": "Questa immagine è correlata alla parola" + sString + "? Rispondimi solamente con True o False."},
+                        "text": "Questa immagine è correlata alla parola " + sString + "? Rispondimi solamente con True o False"},
                     {
                         "inline_data": {
-                            "mime_type": "image/jpeg",
+                            "mime_type": mime_type,
                             "data": base64.b64encode(img).decode('utf-8')
                         }
                     }
@@ -149,18 +139,11 @@ for root, dirs, files in os.walk(sRoot):
         sOutFileName, sOutFileExt = os.path.splitext(filename)
         if CercaStringaInFileName(filename, sStringaDaCercare):
             stringfound = True
-        elif sOutFileExt.lower() == ".pdf":
-            if CercaInFilePdf(pathCompleto, sStringaDaCercare):
-                stringfound = True
-        elif sOutFileExt.lower() == ".docx":
-            if CercaInFileDocx(pathCompleto, sStringaDaCercare):
-                stringfound = True
-        elif any(sOutFileExt.lower() == ext for ext in img_ext):
-            if CercaInImg(pathCompleto, sStringaDaCercare):
-                stringfound = True
-        elif sOutFileExt.lower() == ".txt":
-            if CercaInTxt(pathCompleto, sStringaDaCercare):
-                stringfound = True
+        else:
+            file_check_functions = {".docx": CercaInFileDocx,".pdf": CercaInFilePdf, ".png": CercaInImg, ".jpg": CercaInImg, ".jpeg": CercaInImg}
+            if sOutFileExt in file_check_functions:
+                if file_check_functions[sOutFileExt](pathCompleto, sStringaDaCercare):
+                    stringfound = True
         if stringfound:
             print("Trovato file: ", filename)
             os.makedirs(SOutDir, exist_ok=True)
@@ -171,5 +154,7 @@ for root, dirs, files in os.walk(sRoot):
                 relative_root = os.path.relpath(root, sRoot)
                 sanitized_root = re.sub(r'[\\/]', '_', relative_root)
             new_file_name: str = f"{sanitized_root}_{filename}"
-            dest_path = os.path.join(SOutDir, new_file_name)
+            current_dir = os.getcwd()
+            print(current_dir)
+            dest_path = os.path.join(current_dir, SOutDir, new_file_name)
             shutil.copy(pathCompleto, dest_path)
