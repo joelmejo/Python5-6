@@ -115,7 +115,6 @@ def CercaInImg(sImage, sString) -> bool | None:
     if response.status_code == 200:
         jsonfile = response.json()
         risposta: str = jsonfile["candidates"][0]["content"]["parts"][0]["text"]
-        print("Gemini dice " + risposta)
         risposta = risposta.strip('.')
         if risposta == "True":
             return True
@@ -155,6 +154,5 @@ for root, dirs, files in os.walk(sRoot):
                 sanitized_root = re.sub(r'[\\/]', '_', relative_root)
             new_file_name: str = f"{sanitized_root}_{filename}"
             current_dir = os.getcwd()
-            print(current_dir)
             dest_path = os.path.join(current_dir, SOutDir, new_file_name)
             shutil.copy(pathCompleto, dest_path)
