@@ -1,6 +1,5 @@
 import base64
 import os
-# import textract
 from docx import Document
 import PyPDF2
 import requests
@@ -69,18 +68,12 @@ def CercaInFilePdf(sFile: str, sString: str) -> bool:
             return True
     return False
 
-
-# def CercaInFileDocx(sFile: str, sString: str) -> bool:
-#    text = textract.process(sFile)
-#    text = text.lower()
-#    if (text.find(sString.encode()) != -1):
-#        return True
-#    return False
-
 def CercaInFileDocx(sFile: str, sString: str) -> bool:
     doc = Document(sFile)
+    search_string = sString.lower()
     for para in doc.paragraphs:
-        if sString in para.text:
+        para_text = para.text.lower()
+        if search_string in para_text:
             return True
     return False
 
@@ -91,7 +84,7 @@ def CercaInImg(sImage, sString) -> bool | None:
         '.jpeg': 'image/jpeg', 
         '.png': 'image/png'
     }
-    mime_type = mime_types.get(ext.lower())
+    mime_type = mime_types[ext.lower()]
     with open(sImage, 'rb') as f:
         img = f.read()
         
